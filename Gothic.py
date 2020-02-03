@@ -1,285 +1,475 @@
+from sys import exit
+from random import randint
+from textwrap import dedent
+from Items import *
+from Characters import *
+
 #   Gothic          #
 #   Max Crandall    #
-#   1/15/2020       #
+#   1/31/2020       #
 
-import random
+class area(object):
 
-# Equipment
-small_sword = 0
-copper_shield = 0
+    def enter(self):
+        print("Empty")
+        exit(1)
 
-# Key Items
-crypt_key = 0
+class Engine(object):
 
-# Stats
-gold = 0
-health = 300
-deaths = 0
+    def __init__(self, area_map):
+        self.area_map = area_map
 
-prompt = "> "
+    def play(self):
+        current_area = self.area_map.opening_area()
+        last_area = self.area_map.next_area('finished')
 
-# Intro Sequence
+        while current_area != last_area:
+            next_area_name = current_area.enter()
+            current_area = self.area_map.next_area(next_area_name)
 
+        current_area.enter()
 
-def Intro(deaths):
-    if deaths == 0:
-        print("You wake up.")
-        print("You are laying on a slab.")
-        print("You seem to be in some sort of crypt.")
-        print("As you get up you see that you have the form of a skeleton.\n")
-        Crypt_Start_Area()
-    else:
-        print("You wake up.")
-        print("You are laying on a slab.")
-        print("You seem to be in some sort of crypt.")
-        print("This seems to be familiar.\n")
-        Crypt_Start_Area()
+class Death(area):
 
-# Death
+    def enter(self):
+        print(dedent("""
+            You have died
+            """))
 
+        exit(1)
 
-def Death(how, deaths):
-    ResetItems()
-    deaths += 1
-    print(how, "\n")
-    print("You died.\n")
-    print("Try again?")
-    print("1. Yes")
-    print("2. No")
+class Intro(area):
 
-    restart = input(prompt)
+    def enter(self):
+        print(dedent("""
+            You have awakened.....
+            As you get up, you look around.
+            The area you are in seems to be an underground crypt.
+            As you raise your hands you see skeletal fingers.
+            You are in the form of an undead skeleton.
+            """))
 
-    if restart == "1":
-        Intro(deaths)
-    else:
-        print(f"You have died {deaths} times")
+        return 'main_crypt'
 
-# Inventory
+class MainCrypt(area):
 
+    def enter(self):
+        print(dedent("""
+            -Main Crypt-
+            From where you are there are two hallways. One to
+            the left and one to the right. There is also a gate
+            with a stairwell behind it leading upwards.
+            """))
+        if copper_shield.inInventory == False:
+            print(dedent(f"""
+                Next to the slab that you have awoken from there is a
+                {copper_shield.name}.
+                """))
 
-def Inventory():
-    global small_sword
-    global copper_shield
-    global crypt_key
-    print(f"Small Sword = {small_sword}")
-    print(f"Copper Shield = {copper_shield}")
-    print(f"Crypt Key = {crypt_key}")
+            print(dedent(f"""
 
+                What do you do?
+                1. Take the {copper_shield.name}.
+                2. Go down the left hallway.
+                3. Go down the right hallway.
+                4. Go to the gate.
+                """))
 
-def ResetItems():
-    global small_sword
-    global copper_shield
-    global crypt_key
-    global gold
-    global health
-    small_sword = 0
-    copper_shield = 0
-    crypt_key = 0
-    gold = 0
-    health = 300
+            choice = input("> ")
 
-# Encounters
-
-
-def Encounter(enemy, inventory, health):
-    if enemy == "None":
-        print("No enemies appeared")
-    elif enemy == "Zombie":
-        print("A zombie appears")
-
-# Crypt Start
-
-
-def Crypt_Start_Area():
-    global copper_shield
-    if copper_shield == 0:
-        print("There are two hallways one to the left, and one to the right.")
-        print("There is also a gate with a stairwell leading upwards.")
-        print("Lying next to the slab is a copper shield.\n")
-        print("What do you do?")
-        print("1. Go to the left hallway")
-        print("2. Go to the right hallway")
-        print("3. Go to the gate")
-        print("4. Take the copper shield\n")
-
-        CryptStartArea = input(prompt)
-
-        if CryptStartArea == "1":
-            Crypt_Statue_Room()
-        elif CryptStartArea == "2":
-            Crypt_Key_Room()
-        elif CryptStartArea == "3":
-            Crypt_Gate()
-        elif CryptStartArea == "4":
-            print("You took the copper shield.\n")
-            copper_shield = 1
-            Crypt_Start_Area()
+            if choice == "1":
+                print(dedent(f"""
+                    You take the {copper_shield.name}.
+                    """))
+                copper_shield.inInventory = True
+                return 'main_crypt'
+            elif choice == "2":
+                print(dedent("""
+                    You head down the left hallway.
+                    """))
+                return 'statue_crypt'
+            elif choice == "3":
+                print(dedent("""
+                    You head down the right hallway.
+                    """))
+                return 'waterway_crypt'
+            elif choice == "4":
+                print(dedent("""
+                    You approach the gate.
+                    """))
+                return 'gate_crypt'
+            else:
+                print(dedent("""
+                    You just stared into space.
+                    """))
+                return 'main_crypt'
         else:
-            print("You just stare into empty space.\n")
-            Crypt_Start_Area()
-    else:
-        print("There are two hallways one to the left, and one to the right.")
-        print("There is also a gate with a stairwell leading upwards.")
-        print("The copper shield that once lied next to the slab is gone.\n")
-        print("What do you do?")
-        print("1. Go to the left hallway")
-        print("2. Go to the right hallway")
-        print("3. Go to the gate")
-        print("4. Put the copper shield back\n")
+            print(dedent("""
 
-        CryptStartArea = input(prompt)
+                What do you do?
+                1. Go down the left hallway.
+                2. Go down the right hallway.
+                3. Go to the gate.
+                """))
 
-        if CryptStartArea == "1":
-            Crypt_Statue_Room()
-        elif CryptStartArea == "2":
-            Crypt_Key_Room()
-        elif CryptStartArea == "3":
-            Crypt_Gate()
-        elif CryptStartArea == "4":
-            print("Put the copper shield back.\n")
-            copper_shield = 0
-            Crypt_Start_Area()
+            choice = input("> ")
+
+            if choice == "1":
+                print(dedent("""
+                    You head down the left hallway.
+                    """))
+                return 'statue_crypt'
+            elif choice == "2":
+                print(dedent("""
+                    You head down the right hallway.
+                    """))
+                return 'waterway_crypt'
+            elif choice == "3":
+                print(dedent("""
+                    You approach the gate.
+                    """))
+                return 'gate_crypt'
+            else:
+                print(dedent("""
+                    You just stared into space.
+                    """))
+                return 'main_crypt'
+
+class StatueCrypt(area):
+
+    def enter(self):
+        print(dedent("""
+            -Statue Crypt-
+            As you enter the room, you see a statue of a hero.
+            The statue is posing heroically, a sign next to the
+            statue reads 'The great hero Karl Sturnguard whom has
+            slain the last of the demons.'
+            """))
+        if small_sword.inInventory == False:
+            print(dedent(f"""
+                You spot a {small_sword.name} lying next to the statue.
+                """))
+
+            print(dedent(f"""
+
+                What do you do?
+                1. Take the {small_sword.name}.
+                2. Desecrate the statue.
+                3. Go back.
+                """))
+
+            choice = input("> ")
+
+            if choice == "1":
+                print(dedent(f"""
+                    You take the {small_sword.name}.
+                    """))
+                small_sword.inInventory = True
+                return 'statue_crypt'
+            elif choice == "2":
+                print(dedent("""
+                    You attempt to desecrate the statue.
+                    """))
+                chance = randint(1,3)
+                if chance == 1:
+                    print(dedent(f"""
+                        Your attempt at destorying the statue was to no avail,
+                        but while trying, you find a {life_bottle.name} wedged
+                        in the statue. You then take it for yourself.
+                        """))
+                    life_bottle.amount += 1
+                    return 'statue_crypt'
+                elif chance == 2:
+                    print(dedent(f"""
+                        Your attempt at destorying the statue was to no avail.
+                        """))
+                    return 'statue_crypt'
+                else:
+                    print(dedent(f"""
+                        Your attempt at destorying the statue was to no avail,
+                        but while trying, a piece of the statue fell of
+                        and hit you smack in the skull, causing it to
+                        explode into tiny pieces.
+                        """))
+                    return 'death'
+            elif choice == "3":
+                print(dedent("""
+                    You go back to the main crypt.
+                    """))
+                return 'main_crypt'
+            else:
+                print(dedent("""
+                    You just stare at the statue.
+                    """))
+                return 'statue_crypt'
         else:
-            print("You just stare into empty space.\n")
-            Crypt_Start_Area()
+            print(dedent(f"""
 
+                What do you do?
+                1. Desecrate the statue.
+                2. Go back.
+                """))
 
-# Crypt Statue Room
-def Crypt_Statue_Room():
-    global small_sword
-    if small_sword == 0:
-        print("You find yourself in a room with a statue of a hero.")
-        print("Below next to the statue you see a small sword.\n")
-        print("What do you do?")
-        print("1. Take the small sword")
-        print("2. Desecrate the statue")
-        print("3. Exit the area\n")
+            choice = input("> ")
 
-        CryptStatueRoom = input(prompt)
+            if choice == "1":
+                print(dedent("""
+                    You attempt to desecrate the statue.
+                    """))
+                chance = randint(1,3)
+                if chance == 1:
+                    print(dedent(f"""
+                        Your attempt at destorying the statue was to no avail,
+                        but while trying, you find a {life_bottle.name} wedged
+                        in the statue. You then take it for yourself.
+                        """))
+                    life_bottle.amount += 1
+                    return 'statue_crypt'
+                elif chance == 2:
+                    print(dedent(f"""
+                        Your attempt at destorying the statue was to no avail.
+                        """))
+                    return 'statue_crypt'
+                else:
+                    print(dedent(f"""
+                        Your attempt at destorying the statue was to no avail,
+                        but while trying, a piece of the statue fell of
+                        and hit you smack in the skull, causing it to
+                        explode into tiny pieces.
+                        """))
+                    return 'death'
+            elif choice == "2":
+                print(dedent("""
+                    You go back to the main crypt.
+                    """))
+                return 'main_crypt'
+            else:
+                print(dedent("""
+                    You just stare at the statue.
+                    """))
+                return 'statue_crypt'
 
-        if CryptStatueRoom == "1":
-            if small_sword == 0:
-                print("You took the small sword.\n")
-                small_sword = 1
-                Crypt_Statue_Room()
-        elif CryptStatueRoom == "2":
-            print("After attempting to dismantle the statue you tripped and fell")
-            Death("landing on your skull, you explode into tiny bone fragments.", deaths)
-        elif CryptStatueRoom == "3":
-            print("You left the room\n")
-            Crypt_Start_Area()
+class WaterwayCrypt(area):
+    def enter(self):
+        print(dedent("""
+            -Waterway Crypt-
+            As you enter the room, you can see a stream of water
+            coming from a grate from one side of the room which
+            flows to the other side of the room into another grate.
+            """))
+        if crypt_key.inInventory == False:
+            print(dedent(f"""
+                Taking a closer look into the stream of water, you can
+                see something shimmer. It seems to be the {crypt_key.name}.
+                """))
+
+            print(dedent(f"""
+
+                What do you do?
+                1. Take the {crypt_key.name}.
+                2. Go for a swim.
+                3. Look for more things in the water.
+                4. Go back.
+                """))
+
+            choice = input("> ")
+
+            if choice == "1":
+                print(dedent(f"""
+                    You carefully fish out the {crypt_key.name}.
+                    """))
+                crypt_key.inInventory = True
+                return 'waterway_crypt'
+            elif choice == "2":
+                print(dedent(f"""
+                    You jump right into the water. But have you forgotten?
+                    You are only just a skeleton and bouyancy is a problem
+                    for the undead. You then proceed to drown.
+                    """))
+                return 'death'
+            elif choice == "3":
+                print(dedent("""
+                    You attempt find something in the water.
+                    """))
+                chance = randint(1,3)
+                if chance == 1:
+                    print(dedent(f"""
+                        You manage to fish something out of the water. It
+                        is an {energy_vile.name}.
+                        """))
+                    energy_vile.amount += 1
+                    return 'waterway_crypt'
+                elif chance == 2:
+                    print(dedent(f"""
+                        You find nothing.
+                        """))
+                    return 'waterway_crypt'
+                else:
+                    print(dedent(f"""
+                        While trying to fish something out of the water,
+                        something grabs your boney hand and drags you in.
+                        You then proceed to drown.
+                        """))
+                    return 'death'
+            elif choice == "4":
+                print(dedent("""
+                    You go back to the main crypt.
+                    """))
+                return 'main_crypt'
+            else:
+                print(dedent("""
+                    You just stared at the stream.
+                    """))
+                return 'waterway_crypt'
+
         else:
-            print("You just stared at the statue\n")
-            Crypt_Statue_Room()
-    else:
-        print("You find yourself in a room with a statue of a hero.")
-        print("There is no longer a small sword next to the statue.\n")
-        print("What do you do?")
-        print("1. Put the small sword back")
-        print("2. Desecrate the statue")
-        print("3. Exit the area\n")
+            print(dedent(f"""
 
-        CryptStatueRoom = input(prompt)
+                What do you do?
+                1. Go for a swim.
+                2. Look for more things in the water.
+                3. Go back.
+                """))
 
-        if CryptStatueRoom == "1":
-            print("You put the small sword back.\n")
-            small_sword = 0
-            Crypt_Statue_Room()
-        elif CryptStatueRoom == "2":
-            print("After attempting to dismantle the statue you tripped and fell")
-            Death("landing on your skull, you explode into tiny bone fragments.", deaths)
-        elif CryptStatueRoom == "3":
-            print("You left the room.\n")
-            Crypt_Start_Area()
+            choice = input("> ")
+
+            if choice == "1":
+                print(dedent(f"""
+                    You jump right into the water. But have you forgotten?
+                    You are only just a skeleton and bouyancy is a problem
+                    for the undead. You then proceed to drown.
+                    """))
+                return 'death'
+            elif choice == "2":
+                print(dedent("""
+                    You attempt find something in the water.
+                    """))
+                chance = randint(1,3)
+                if chance == 1:
+                    print(dedent(f"""
+                        You manage to fish something out of the water. It
+                        is a {energy_vile.name}.
+                        """))
+                    energy_vile.amount += 1
+                    return 'waterway_crypt'
+                elif chance == 2:
+                    print(dedent(f"""
+                        You find nothing.
+                        """))
+                    return 'waterway_crypt'
+                else:
+                    print(dedent(f"""
+                        While trying to fish something out of the water,
+                        something grabs your boney hand and drags you in.
+                        You then proceed to drown.
+                        """))
+                    return 'death'
+            elif choice == "3":
+                print(dedent("""
+                    You go back to the main crypt.
+                    """))
+                return 'main_crypt'
+            else:
+                print(dedent("""
+                    You just stared at the stream.
+                    """))
+                return 'waterway_crypt'
+
+class GateCrypt(area):
+    def enter(self):
+        print(dedent("""
+            -Gate Crypt-
+            As you near the gate, there seems to be a lock attached.
+            Beyond the gate it looks like freedom from this dank and
+            dark crypt.
+            """))
+        if crypt_key.inInventory == True:
+            print(dedent(f"""
+                But you now have the {crypt_key.name}!
+                You can now get out of here.
+                """))
+
+            print(dedent(f"""
+
+                What do you do?
+                1. Leave the crypt.
+                2. Go back.
+                """))
+
+            choice = input("> ")
+
+            if choice == "1":
+                print(dedent(f"""
+                    You exit the crypt
+                    """))
+                return 'crypt_graveyard'
+            elif choice == "2":
+                print(dedent(f"""
+                    You go back to the main crypt.
+                    """))
+                return 'main_crypt'
+            else:
+                print(dedent(f"""
+                    You just stare at the lock.
+                    """))
+                return 'gate_crypt'
         else:
-            print("You just stared at the statue.\n")
-            Crypt_Statue_Room()
+            print(dedent(f"""
 
-# Crypt Key Room
+                What do you do?
+                1. Try to open the lock.
+                2. Use your head.
+                3. Go back.
+                """))
 
+            choice = input("> ")
 
-def Crypt_Key_Room():
-    global crypt_key
-    if crypt_key == 0:
-        print("You see a small stream of water on the ground.")
-        print("Taking a closer look you see something shimmer in the water.")
-        print("It seems to be a key.\n")
-        print("What do you do?")
-        print("1. Take the key")
-        print("2. Go for a swim")
-        print("3. Exit the area\n")
+            if choice == "1":
+                print(dedent(f"""
+                    You try to fiddle with the lock to no avail.
+                    """))
+                return 'gate_crypt'
+            elif choice == "2":
+                print(dedent(f"""
+                    You bang your skull on the lock to no avail.
+                    fustrated and determined you continuosly bang
+                    your skull on the lock. After banging too many
+                    times your skull has exploded into a million
+                    tiny pieces.
+                    """))
+                return 'death'
+            elif choice == "3":
+                print(dedent(f"""
+                    You go back to the main crypt.
+                    """))
+                return 'main_crypt'
+            else:
+                print(dedent(f"""
+                    You just stare at the lock.
+                    """))
+                return 'gate_crypt'
 
-        CryptKeyRoom = input(prompt)
+class Map(object):
 
-        if CryptKeyRoom == "1":
-            print("You carefully grabbed the key")
-            print("from the water and fished it out.\n")
-            crypt_key = 1
-            Crypt_Key_Room()
-        elif CryptKeyRoom == "2":
-            print("You jump in the water")
-            print("but bouyancy is a problem if you are just bones.")
-            Death("You then proceed to drown.", deaths)
-        elif CryptKeyRoom == "3":
-            print("You left the room.\n")
-            Crypt_Start_Area()
-        else:
-            print("You just stared at the flowing water\n")
-            Crypt_Key_Room()
-    else:
-        print("You see a small stream of water on the ground.")
-        print("Nothing shimmers in the water.\n")
-        print("What do you do?")
-        print("1. Try to find something in the water")
-        print("2. Go for a swim")
-        print("3. Exit the area\n")
+    areas = {
+        'intro': Intro(),
+        'death': Death(),
+        'main_crypt': MainCrypt(),
+        'statue_crypt': StatueCrypt(),
+        'waterway_crypt': WaterwayCrypt(),
+        'gate_crypt': GateCrypt()
+    }
 
-        CryptKeyRoom = input(prompt)
+    def __init__(self, start_area):
+        self.start_area = start_area
 
-        if CryptKeyRoom == "1":
-            print("After moving your hand around in the water you found nothing.\n")
-            Crypt_Key_Room()
-        elif CryptKeyRoom == "2":
-            print("You jump in the water")
-            print("but bouyancy is a problem if you are just bones.")
-            Death("You then proceed to drown.", deaths)
-        elif CryptKeyRoom == "3":
-            print("You left the room.\n")
-            Crypt_Start_Area()
-        else:
-            print("You just stared at the flowing water.\n")
-            Crypt_Key_Room()
+    def next_area(self, area_name):
+        val = Map.areas.get(area_name)
+        return val
 
-# Crypt Gate
+    def opening_area(self):
+        return self.next_area(self.start_area)
 
-
-def Crypt_Gate():
-    global crypt_key
-    print("You get closer to the gate.")
-    print("There is a lock on the gate.\n")
-    print("What do you do?")
-    print("1. Open the lock")
-    print("2. Use your head")
-    print("3. Exit the area\n")
-
-    CryptGate = input(prompt)
-
-    if CryptGate == "1":
-        if crypt_key == 1:
-            print("You unlock the gate with the key.")
-            print("You then proceed to leave the crypt.\n")
-        else:
-            print("You can't open it normally without a key.\n")
-            Crypt_Gate()
-    elif CryptGate == "2":
-        print("You proceed to bang your skull against the lock to no avail.")
-        Death("In desperation you keep banging until your skull falls off.", deaths)
-    elif CryptGate == "3":
-        print("You left the room.\n")
-        Crypt_Start_Area()
-    else:
-        print("You just stare at the lock.\n")
-        Crypt_Gate()
-
-
-Intro(deaths)
+area = Map('intro')
+Gothic = Engine(area)
+Gothic.play()
