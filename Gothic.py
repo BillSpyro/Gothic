@@ -1284,11 +1284,122 @@ angel_statue_graveyard = AngelStatueGraveyard(1, False)
 
 class MonumentGraveyard(area):
     def enter(self):
-        pass
+        combatChance = randint(1,2)
+        if combatChance > 1 and combat.fought == False:
+            combat.enemy = zombie
+            combat.area = 'monument_graveyard'
+            zombie.health = 20
+            return 'combat'
+
+        combat.fought = False
+
+        print(dedent("""
+            -Monument Graveyard-
+            You have come across a large monument in the middle of the graveyard.
+            This seems to be the center landmark of the graveyard. From where you
+            are there are three paths. One leads to the Angel Statue. Another leads
+            to A Skull Gate. The last leads into a large ditch of unfilled graves.
+            In the not so distance you are getting closer to the Hilltop Mausoleum.
+            """))
+        print(dedent("""
+
+            What do you do?
+            1. Go to the Skull Gate.
+            2. Go into the ditch.
+            3. Go to the Angel Statue.
+            """))
+
+        choice = input("> ")
+
+        if choice == "1":
+            print(dedent("""
+                You approach the Skull Gate.
+                """))
+            return 'skull_gate_graveyard'
+        elif choice == "2":
+            print(dedent("""
+                You go into the ditch.
+                """))
+            return 'ditch_graveyard'
+        elif choice == "3":
+            print(dedent("""
+                You go towards the angel statue.
+                """))
+            return 'angel_statue_graveyard'
+        else:
+            print(dedent("""
+                You just stare at monument.
+                """))
+            combat.fought = True
+            return 'monument_graveyard'
 
 class SkullGateGraveyard(area):
     def enter(self):
-        pass
+        combatChance = randint(1,2)
+        if combatChance > 1 and combat.fought == False:
+            combat.enemy = wolf
+            combat.area = 'skull_gate_graveyard'
+            wolf.health = 25
+            return 'combat'
+
+        combat.fought = False
+
+        print(dedent("""
+            -Skull Gate Graveyard-
+            Now infront of the Skull Gate you see that of course it is locked.
+            a sign next to the gate reads, "Passed these gates lies the land
+            of the living. Only those worthy enough may leave the necropolis."
+            """))
+
+        if skull_key.inInventory == True:
+            print(dedent("""
+                You now have the skull key and you can move forward.
+                """))
+
+        print(dedent("""
+
+            What do you do?
+            """))
+
+        if skull_key.inInventory == True:
+            print(dedent("""
+                1. Go through the Skull Gate.
+                """))
+        else:
+            print(dedent("""
+                1. Bang on the Skull Gate.
+                """))
+        print(dedent("""
+            2. Go back to the monument.
+            """))
+
+        choice = input("> ")
+
+        if choice == "1" and skull_key.inInventory == True:
+            print(dedent("""
+                You leave the necropolis.
+                """))
+            return 'completed'
+        elif choice == "1" and skull_key.inInventory == False:
+            print(dedent("""
+                You try and bang on the Skull Gates hoping something will
+                happen. But all the noise just attracted some wolves.
+                """))
+            combat.enemy = wolf
+            combat.area = 'skull_gate_graveyard'
+            wolf.health = 25
+            return 'combat'
+        elif choice == "2":
+            print(dedent("""
+                You go back to the monument.
+                """))
+            return 'monument_graveyard'
+        else:
+            print(dedent("""
+                You just stare at Skull Gate.
+                """))
+            combat.fought = True
+            return 'skull_gate_graveyard'
 
 class CliffSideGraveyard(area):
     def enter(self):
@@ -1362,7 +1473,9 @@ class Map(object):
         'graves_graveyard': GravesGraveyard(0),
         'wooden_gate_graveyard': WoodenGateGraveyard(),
         'tomb_graveyard': TombGraveyard(),
-        'angel_statue_graveyard': AngelStatueGraveyard(0, 0)
+        'angel_statue_graveyard': AngelStatueGraveyard(0, 0),
+        'monument_graveyard': MonumentGraveyard(),
+        'skull_gate_graveyard': SkullGateGraveyard()
     }
 
     def __init__(self, start_area):
