@@ -54,7 +54,7 @@ class Combat(area):
                     Your {copper_shield.name} durability {copper_shield.durability}.
                     """))
 
-            print(dedent(f"""
+            print(dedent("""
                 What do you do?
                 1. Attack.
                 2. Use item.
@@ -90,7 +90,7 @@ class Combat(area):
                 if choice == '1':
                     combat.enemy.health -= arm.damage
                     print(dedent(f"""
-                        You pull off your arm and proceed
+                        You pull off your skeletal arm and proceed
                         to smack the {combat.enemy.name} dealing {arm.damage}.
                         """))
 
@@ -116,7 +116,7 @@ class Combat(area):
                     return 'combat'
 
             elif choice == "2":
-                print(dedent(f"""
+                print(dedent("""
                     Use what?
                     """))
 
@@ -134,37 +134,49 @@ class Combat(area):
 
                 if choice == '1' and life_bottle.amount > 0:
                     if player.health >= 100:
-                        print(dedent(f"""
+                        print(dedent("""
                             You are at full health.
                             """))
                     else:
-                        player.healh += life_bottle.health
+                        player.health += life_bottle.health
                         life_bottle.amount -= 1
                         if player.health > 100:
                             player.health = 100
+                        print(dedent(f"""
+                            You used the {life_bottle.name}.
+                            """))
 
                 elif choice == '2' and energy_vile.amount > 0:
                     if player.health >= 100:
-                        print(dedent(f"""
+                        print(dedent("""
                             You are at full health.
                             """))
                     else:
-                        player.healh += energy_vile.health
+                        player.health += energy_vile.health
                         energy_vile.amount -= 1
                         if player.health > 100:
                             player.health = 100
+                        print(dedent(f"""
+                            You used the {energy_vile.name}.
+                            """))
+
+                else:
+                    return 'combat'
 
             elif choice == "3":
-                print(dedent(f"""
-                    You choose to do nothing.
+                print(dedent("""
+                    You chose to do nothing.
                     """))
 
             else:
+                print(dedent(f"""
+                    You just stared at the {combat.enemy.name}.
+                    """))
                 return 'combat'
 
             enemyAttack = randint(1,2)
 
-            if enemyAttack > 1:
+            if enemyAttack > 1 and combat.enemy.health > 0:
                 print(dedent(f"""
                     The {combat.enemy.name} hits.
                     """))
@@ -366,12 +378,12 @@ class StatueCrypt(area):
                     life_bottle.amount += 1
                     return 'statue_crypt'
                 elif chance == 2:
-                    print(dedent(f"""
+                    print(dedent("""
                         Your attempt at destorying the statue was to no avail.
                         """))
                     return 'statue_crypt'
                 else:
-                    print(dedent(f"""
+                    print(dedent("""
                         Your attempt at destorying the statue was to no avail,
                         but while trying, a piece of the statue fell of
                         and hit you smack in the skull, causing it to
@@ -389,7 +401,7 @@ class StatueCrypt(area):
                     """))
                 return 'statue_crypt'
         else:
-            print(dedent(f"""
+            print(dedent("""
 
                 What do you do?
                 1. Desecrate the statue.
@@ -412,12 +424,12 @@ class StatueCrypt(area):
                     life_bottle.amount += 1
                     return 'statue_crypt'
                 elif chance == 2:
-                    print(dedent(f"""
+                    print(dedent("""
                         Your attempt at destorying the statue was to no avail.
                         """))
                     return 'statue_crypt'
                 else:
-                    print(dedent(f"""
+                    print(dedent("""
                         Your attempt at destorying the statue was to no avail,
                         but while trying, a piece of the statue fell of
                         and hit you smack in the skull, causing it to
@@ -467,7 +479,7 @@ class WaterwayCrypt(area):
                 crypt_key.inInventory = True
                 return 'waterway_crypt'
             elif choice == "2":
-                print(dedent(f"""
+                print(dedent("""
                     You jump right into the water. But have you forgotten?
                     You are only just a skeleton and bouyancy is a problem
                     for the undead. You then proceed to drown.
@@ -486,12 +498,12 @@ class WaterwayCrypt(area):
                     energy_vile.amount += 1
                     return 'waterway_crypt'
                 elif chance == 2:
-                    print(dedent(f"""
+                    print(dedent("""
                         You find nothing.
                         """))
                     return 'waterway_crypt'
                 else:
-                    print(dedent(f"""
+                    print(dedent("""
                         While trying to fish something out of the water,
                         something grabs your boney hand and drags you in.
                         You then proceed to drown.
@@ -509,7 +521,7 @@ class WaterwayCrypt(area):
                 return 'waterway_crypt'
 
         else:
-            print(dedent(f"""
+            print(dedent("""
 
                 What do you do?
                 1. Go for a swim.
@@ -520,7 +532,7 @@ class WaterwayCrypt(area):
             choice = input("> ")
 
             if choice == "1":
-                print(dedent(f"""
+                print(dedent("""
                     You jump right into the water. But have you forgotten?
                     You are only just a skeleton and bouyancy is a problem
                     for the undead. You then proceed to drown.
@@ -539,12 +551,12 @@ class WaterwayCrypt(area):
                     energy_vile.amount += 1
                     return 'waterway_crypt'
                 elif chance == 2:
-                    print(dedent(f"""
+                    print(dedent("""
                         You find nothing.
                         """))
                     return 'waterway_crypt'
                 else:
-                    print(dedent(f"""
+                    print(dedent("""
                         While trying to fish something out of the water,
                         something grabs your boney hand and drags you in.
                         You then proceed to drown.
@@ -575,7 +587,7 @@ class GateCrypt(area):
                 You can now get out of here.
                 """))
 
-            print(dedent(f"""
+            print(dedent("""
 
                 What do you do?
                 1. Leave the crypt.
@@ -585,22 +597,22 @@ class GateCrypt(area):
             choice = input("> ")
 
             if choice == "1":
-                print(dedent(f"""
+                print(dedent("""
                     You exit the crypt.
                     """))
                 return 'crypt_graveyard'
             elif choice == "2":
-                print(dedent(f"""
+                print(dedent("""
                     You go back to the main crypt.
                     """))
                 return 'main_crypt'
             else:
-                print(dedent(f"""
+                print(dedent("""
                     You just stare at the lock.
                     """))
                 return 'gate_crypt'
         else:
-            print(dedent(f"""
+            print(dedent("""
 
                 What do you do?
                 1. Try to open the lock.
@@ -611,12 +623,12 @@ class GateCrypt(area):
             choice = input("> ")
 
             if choice == "1":
-                print(dedent(f"""
+                print(dedent("""
                     You try to fiddle with the lock to no avail.
                     """))
                 return 'gate_crypt'
             elif choice == "2":
-                print(dedent(f"""
+                print(dedent("""
                     You bang your skull on the lock to no avail.
                     fustrated and determined you continuosly bang
                     your skull on the lock. After banging too many
@@ -625,12 +637,12 @@ class GateCrypt(area):
                     """))
                 return 'death'
             elif choice == "3":
-                print(dedent(f"""
+                print(dedent("""
                     You go back to the main crypt.
                     """))
                 return 'main_crypt'
             else:
-                print(dedent(f"""
+                print(dedent("""
                     You just stare at the lock.
                     """))
                 return 'gate_crypt'
@@ -649,7 +661,7 @@ class CryptGraveyard(area):
             the hilltop mausoleum.
             """))
 
-        print(dedent(f"""
+        print(dedent("""
 
             What do you do?
             1. Go to the graveyard enterance.
@@ -660,22 +672,22 @@ class CryptGraveyard(area):
         choice = input("> ")
 
         if choice == "1":
-            print(dedent(f"""
+            print(dedent("""
                 You walk towards the graveyard enterance.
                 """))
             return 'enterance_graveyard'
         elif choice == "2":
-            print(dedent(f"""
+            print(dedent("""
                 You walk down deeper into the graveyard.
                 """))
             return 'graves_graveyard'
         elif choice == "3":
-            print(dedent(f"""
+            print(dedent("""
                 You go back into the crypt.
                 """))
             return 'gate_crypt'
         else:
-            print(dedent(f"""
+            print(dedent("""
                 You just start into the moonlight.
                 """))
             return 'crypt_graveyard'
@@ -696,7 +708,7 @@ class EnteranceGraveyard(area):
             """))
 
         if enterance_graveyard.looted == False:
-            print(dedent(f"""
+            print(dedent("""
 
                 What do you do?
                 1. Talk to the gargoyle.
@@ -721,7 +733,7 @@ class EnteranceGraveyard(area):
                 enterance_graveyard.looted = True
                 return 'enterance_graveyard'
             elif choice == "3":
-                print(dedent(f"""
+                print(dedent("""
                     You go back up the crypt hill.
                     """))
                 return 'crypt_graveyard'
@@ -741,17 +753,17 @@ class EnteranceGraveyard(area):
             choice = input("> ")
 
             if choice == "1":
-                print(dedent(f"""
+                print(dedent("""
                     You try to talk to the gargoyle.
                     """))
                 return 'gargoyle'
             elif choice == "2":
-                print(dedent(f"""
+                print(dedent("""
                     You go back up the crypt hill.
                     """))
                 return 'crypt_graveyard'
             else:
-                print(dedent(f"""
+                print(dedent("""
                     You just stare into the distant village.
                     """))
                 return 'enterance_graveyard'
@@ -770,7 +782,7 @@ class Gargoyle(area):
             Gold: {player.gold}
             """))
 
-        print(dedent(f"""
+        print(dedent("""
 
             Category?
             1. Health
@@ -818,7 +830,7 @@ class Gargoyle(area):
             elif choice == "3":
                 return 'gargoyle'
             else:
-                print(dedent(f"""
+                print(dedent("""
                     You just stare at the gargoyle.
                     """))
                 return 'gargoyle'
@@ -846,7 +858,7 @@ class Gargoyle(area):
                     4. repair {silver_shield.name} costs {silver_shield.value}
                     """))
 
-            print(dedent(f"""
+            print(dedent("""
                 5. Go back
                 """))
 
@@ -907,17 +919,17 @@ class Gargoyle(area):
             elif choice == "5":
                 return 'gargoyle'
             else:
-                print(dedent(f"""
+                print(dedent("""
                     You just stare at the gargoyle.
                     """))
                 return 'gargoyle'
         elif choice == "3":
-            print(dedent(f"""
+            print(dedent("""
                 You stop talking to the gargoyle.
                 """))
             return 'enterance_graveyard'
         else:
-            print(dedent(f"""
+            print(dedent("""
                 You just stare at the gargoyle.
                 """))
             return 'gargoyle'
@@ -928,13 +940,6 @@ class GravesGraveyard(area):
         self.looted = looted
 
     def enter(self):
-        print(dedent("""
-            -Graves Graveyard-
-            You are now surrounded by open graves and tombstones.
-            One way leads to a large wooden gate and the other
-            leads to the crypt hill.
-            """))
-
         combatChance = randint(1,2)
         if combatChance > 1 and combat.fought == False:
             combat.enemy = zombie
@@ -944,9 +949,16 @@ class GravesGraveyard(area):
 
         combat.fought = False
 
+        print(dedent("""
+            -Graves Graveyard-
+            You are now surrounded by open graves and tombstones.
+            One way leads to a large wooden gate and the other
+            leads to the crypt hill.
+            """))
+
         if graves_graveyard.looted == False:
 
-            print(dedent(f"""
+            print(dedent("""
 
                 What do you do?
                 1. Go to the large wooden gate.
@@ -972,7 +984,7 @@ class GravesGraveyard(area):
                 combat.fought = True
                 return 'graves_graveyard'
             elif choice == "3":
-                print(dedent(f"""
+                print(dedent("""
                     You go back up the crypt hill.
                     """))
                 return 'crypt_graveyard'
@@ -984,7 +996,7 @@ class GravesGraveyard(area):
                 return 'graves_graveyard'
 
         else:
-            print(dedent(f"""
+            print(dedent("""
 
                 What do you do?
                 1. Go to the large wooden gate.
@@ -999,7 +1011,7 @@ class GravesGraveyard(area):
                     """))
                 return 'wooden_gate_graveyard'
             elif choice == "2":
-                print(dedent(f"""
+                print(dedent("""
                     You go back up the crypt hill.
                     """))
                 return 'crypt_graveyard'
@@ -1014,15 +1026,261 @@ graves_graveyard = GravesGraveyard(False)
 
 class WoodenGateGraveyard(area):
     def enter(self):
-        pass
+        combatChance = randint(1,2)
+        if combatChance > 1 and combat.fought == False:
+            combat.enemy = zombie
+            combat.area = 'wooden_gate_graveyard'
+            zombie.health = 20
+            return 'combat'
+
+        combat.fought = False
+
+        print(dedent("""
+            -Wooden Gate Graveyard-
+            You have come upon a large wooden gate. It also appears to be locked.
+            Passed the wooden gate you can see the Hilltop Mausoleum in the distance.
+            There are also two other paths near you. One leads back to the open
+            graves closer to the crypt. The other leads into another part of the
+            graveyard with a small tomb that rests on a small hill.
+            """))
+
+        if graveyard_key.inInventory == True:
+            print(dedent("""
+                You now have the key to open the wooden gate.
+                """))
+
+        print(dedent("""
+
+            What do you do?
+            """))
+
+        if graveyard_key.inInventory == True:
+            print(dedent("""
+                1. Go through the wooden gate.
+                """))
+        else:
+            print(dedent("""
+                1. Charge the wooden gate.
+                """))
+        print(dedent("""
+            2. Go towards the tomb.
+            3. Go towards the open graves.
+            """))
+
+        choice = input("> ")
+
+        if choice == "1" and graveyard_key.inInventory == True:
+            print(dedent("""
+                You leave through the wooden gate.
+                """))
+            return 'angel_statue_graveyard'
+        elif choice == "1" and graveyard_key.inInventory == False:
+            print(dedent("""
+                You charge at the wooden gate and upon impact....nothing happens.
+                """))
+            combat.fought = True
+            return 'wooden_gate_graveyard'
+        elif choice == "2":
+            print(dedent("""
+                You go towards the tomb.
+                """))
+            return 'tomb_graveyard'
+        elif choice == "3":
+            print(dedent("""
+                You go back to the open graves.
+                """))
+            return 'graves_graveyard'
+        else:
+            print(dedent("""
+                You just stare at wooden gate.
+                """))
+            combat.fought = True
+            return 'wooden_gate_graveyard'
 
 class TombGraveyard(area):
     def enter(self):
-        pass
+        combatChance = randint(1,2)
+        if combatChance > 1 and combat.fought == False:
+            combat.enemy = zombie
+            combat.area = 'tomb_graveyard'
+            zombie.health = 20
+            return 'combat'
+
+        combat.fought = False
+
+        print(dedent("""
+            -Tomb Graveyard-
+            Now up the hill in front of the tomb you can see
+            a key attached to a coffin inside the tomb.
+            """))
+
+        print(dedent("""
+
+            What do you do?
+            """))
+
+        if graveyard_key.inInventory == False:
+            print(dedent("""
+                1. Raid the tomb for the key.
+                """))
+        else:
+            print(dedent("""
+                1. Present an offering.
+                """))
+        print(dedent("""
+            2. Go back to the wooden gate.
+            """))
+
+        choice = input("> ")
+
+        if choice == "1" and graveyard_key.inInventory == False:
+            print(dedent("""
+                You forcefully take the key from the coffin. In doing so
+                the coffin opens and a headless zombie emerges from the
+                coffin seeking revenge for disrespecting his tomb.
+                """))
+            graveyard_key.inInventory = True
+            combat.enemy = headless_zombie
+            combat.area = 'tomb_graveyard'
+            headless_zombie.health = 30
+            return 'combat'
+        elif choice == "1" and player.gold > 50 and graveyard_key.inInventory == True:
+            print(dedent("""
+                You present an offering of 50 gold to the tomb for
+                stealing the key.
+                """))
+            player.gold -= 50
+            combat.fought = True
+            return 'tomb_graveyard'
+        elif choice == "1" and player.gold < 50 and graveyard_key.inInventory == True:
+            print(dedent("""
+                You don't have enough gold.
+                """))
+            combat.fought = True
+            return 'tomb_graveyard'
+        elif choice == "2":
+            print(dedent("""
+                You go back to the wooden gate.
+                """))
+            return 'wooden_gate_graveyard'
+        else:
+            print(dedent("""
+                You just stare at the tomb.
+                """))
+            combat.fought = True
+            return 'tomb_graveyard'
 
 class AngelStatueGraveyard(area):
+    def __init__(self, direction, looted):
+        self.direction = direction
+        self.looted = looted
+
     def enter(self):
-        pass
+        combatChance = randint(1,2)
+        if combatChance > 1 and combat.fought == False:
+            combat.enemy = zombie
+            combat.area = 'angel_statue_graveyard'
+            zombie.health = 20
+            return 'combat'
+
+        combat.fought = False
+
+        print(dedent("""
+            -Angel Statue Graveyard-
+            As you enter the area a gate behind you closes.
+            In front of you now is an Angel Statue. an inscription on
+            the statue reads, "Nothing is hidden under the gaze of an
+            angel". To the North you will come upon a monument. To the
+            East is a small grave. To the West you will come upon a
+            cliffside. To the South you will come upon the wooden gate.
+            Each direction has a gate.
+            """))
+
+        if angel_statue_graveyard.direction == 1:
+            print(dedent("""
+                The Angel Statue is facing South.
+                """))
+        elif angel_statue_graveyard.direction == 2:
+            print(dedent("""
+                The Angel Statue is facing East.
+                """))
+        elif angel_statue_graveyard.direction == 3:
+            print(dedent("""
+                The Angel Statue is facing North.
+                """))
+        elif angel_statue_graveyard.direction == 4:
+            print(dedent("""
+                The Angel Statue is facing West.
+                """))
+
+        print(dedent("""
+
+            What do you do?
+            """))
+        if angel_statue_graveyard.direction == 1:
+            print(dedent("""
+                1. Go to the wooden gate.
+                """))
+        elif angel_statue_graveyard.direction == 2 and angel_statue_graveyard.looted == False:
+            print(dedent("""
+                1. Loot the grave.
+                """))
+        elif angel_statue_graveyard.direction == 3:
+            print(dedent("""
+                1. Go to the monument.
+                """))
+        elif angel_statue_graveyard.direction == 4:
+            print(dedent("""
+                1. Go to the cliffside.
+                """))
+        print(dedent("""
+            2. Hit the statue.
+            """))
+
+        choice = input("> ")
+
+        if choice == "1" and angel_statue_graveyard.direction == 1:
+            print(dedent("""
+                You go towards the large wooden gate.
+                """))
+            return 'wooden_gate_graveyard'
+        elif choice == "1" and angel_statue_graveyard.direction == 2 and angel_statue_graveyard.looted == False:
+            gold_yield = randint(20, 100)
+            print(dedent(f"""
+                You pillage the grave.
+                The plunder has yielded you {gold_yield} gold.
+                """))
+            player.gold += gold_yield
+            angel_statue_graveyard.looted = True
+            combat.fought = True
+            return 'angel_statue_graveyard'
+        elif choice == "1" and angel_statue_graveyard.direction == 3:
+            print(dedent("""
+                You go to the monument.
+                """))
+            return 'monument_graveyard'
+        elif choice == "1" and angel_statue_graveyard.direction == 4:
+            print(dedent("""
+                You go to the cliffside.
+                """))
+            return 'cliffside_graveyard'
+        elif choice == "2":
+            print(dedent("""
+                You hit the Angel Statue, causing it to rotate.
+                """))
+            angel_statue_graveyard.direction += 1
+            if angel_statue_graveyard.direction > 4:
+                angel_statue_graveyard.direction = 1
+            combat.fought = True
+            return 'angel_statue_graveyard'
+        else:
+            print(dedent("""
+                You just stare at the Angel Statue.
+                """))
+            combat.fought = True
+            return 'angel_statue_graveyard'
+
+angel_statue_graveyard = AngelStatueGraveyard(1, False)
 
 class MonumentGraveyard(area):
     def enter(self):
@@ -1100,8 +1358,11 @@ class Map(object):
         'waterway_crypt': WaterwayCrypt(),
         'gate_crypt': GateCrypt(),
         'crypt_graveyard': CryptGraveyard(),
-        'enterance_graveyard': EnteranceGraveyard(False),
-        'graves_graveyard': GravesGraveyard(False),
+        'enterance_graveyard': EnteranceGraveyard(0),
+        'graves_graveyard': GravesGraveyard(0),
+        'wooden_gate_graveyard': WoodenGateGraveyard(),
+        'tomb_graveyard': TombGraveyard(),
+        'angel_statue_graveyard': AngelStatueGraveyard(0, 0)
     }
 
     def __init__(self, start_area):
