@@ -5,7 +5,7 @@ class Engine(object):
 
     def play(self):
         current_area = self.area_map.opening_area()
-        last_area = self.area_map.next_area('finished')
+        last_area = self.area_map.next_area('completed')
 
         while current_area != last_area:
             next_area_name = current_area.enter()
