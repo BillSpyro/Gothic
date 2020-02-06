@@ -1,2 +1,3 @@
-To play run the Gothic.py file using Python3
-[python3 Gothic.py]
+To play run the game.py file using Python3
+
+python3 game.py
