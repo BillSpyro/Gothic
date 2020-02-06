@@ -1,3 +1,4 @@
+#Base Character
 class Character(object):
     def __init__(self, name, health):
         self.name = name

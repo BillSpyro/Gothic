@@ -4,12 +4,14 @@ from textwrap import dedent
 from Items import *
 from Characters import *
 
+#Base Area
 class area(object):
 
     def enter(self):
         print("Empty")
         exit(1)
 
+#Combat System
 class Combat(area):
     def __init__(self, enemy, area, fought):
         self.enemy = enemy
@@ -61,9 +63,9 @@ class Combat(area):
                         3. Your {club.name}.
                         """))
 
-                if hammer.inInventory == True:
+                if war_hammer.inInventory == True:
                     print(dedent(f"""
-                        4. Your {hammer.name}.
+                        4. Your {war_hammer.name}.
                         """))
 
                 choice = input("> ")
@@ -72,7 +74,7 @@ class Combat(area):
                     combat.enemy.health -= arm.damage
                     print(dedent(f"""
                         You pull off your skeletal arm and proceed
-                        to smack the {combat.enemy.name} dealing {arm.damage}.
+                        to smack the {combat.enemy.name} dealing {arm.damage} damage.
                         """))
 
                 elif choice == '2' and small_sword.inInventory == True:
@@ -87,10 +89,10 @@ class Combat(area):
                         You dealt {club.damage} to the {combat.enemy.name}.
                         """))
 
-                elif choice == '4' and hammer.inInventory == True:
-                    combat.enemy.health -= hammer.damage
+                elif choice == '4' and war_hammer.inInventory == True:
+                    combat.enemy.health -= war_hammer.damage
                     print(dedent(f"""
-                        You dealt {hammer.damage} to the {combat.enemy.name}.
+                        You dealt {war_hammer.damage} to the {combat.enemy.name}.
                         """))
 
                 else:
@@ -212,6 +214,207 @@ class Combat(area):
 
 combat = Combat(0, 0, 0)
 
+#Shop System
+class Gargoyle(area):
+    def enter(self):
+        print(dedent("""
+            -Gargoyle-
+            Hello Stranger. I have many useful items for sale.
+            What would you like to buy?
+            """))
+
+        print(dedent(f"""
+            Gold: {player.gold}
+            """))
+
+        print(dedent("""
+
+            Category?
+            1. Health
+            2. Shields
+            3. Weapons
+            4. Go back
+            """))
+
+        choice = input("> ")
+
+        if choice == "1":
+            print(dedent(f"""
+                1. {life_bottle.name} costs {life_bottle.value}
+                2. {energy_vile.name} costs {energy_vile.value}
+                3. Go back
+                """))
+
+            choice = input("> ")
+
+            if choice == "1":
+                if player.gold > life_bottle.value:
+                    player.gold -= life_bottle.value
+                    life_bottle.amount += 1
+                    print(dedent(f"""
+                        You bought the {life_bottle.name}.
+                        """))
+                    return 'gargoyle'
+                else:
+                    print(dedent(f"""
+                        You can't afford the {life_bottle.name}.
+                        """))
+                    return 'gargoyle'
+            elif choice == "2":
+                if player.gold > energy_vile.value:
+                    player.gold -= energy_vile.value
+                    energy_vile.amount += 1
+                    print(dedent(f"""
+                        You bought the {energy_vile.name}.
+                        """))
+                    return 'gargoyle'
+                else:
+                    print(dedent(f"""
+                        You can't afford the {energy_vile.name}.
+                        """))
+                    return 'gargoyle'
+            elif choice == "3":
+                return 'gargoyle'
+            else:
+                print(dedent("""
+                    You just stare at the gargoyle.
+                    """))
+                return 'gargoyle'
+
+
+        elif choice == "2":
+
+            if copper_shield.inInventory == False:
+                print(dedent(f"""
+                    1. buy {copper_shield.name} costs {copper_shield.value}
+                    """))
+
+            if copper_shield.inInventory == True and copper_shield.durability < 50:
+                print(dedent(f"""
+                    2. repair {copper_shield.name} costs {copper_shield.value}
+                    """))
+
+            if silver_shield.inInventory == False:
+                print(dedent(f"""
+                    3. buy {silver_shield.name} costs {silver_shield.value}
+                    """))
+
+            if silver_shield.inInventory == True and silver_shield.durability < 100:
+                print(dedent(f"""
+                    4. repair {silver_shield.name} costs {silver_shield.value}
+                    """))
+
+            print(dedent("""
+                5. Go back
+                """))
+
+            choice = input("> ")
+
+            if choice == "1" and copper_shield.inInventory == False:
+                if player.gold > copper_shield.value:
+                    player.gold -= copper_shield.value
+                    copper_shield.inInventory = True
+                    print(dedent(f"""
+                        You bought the {copper_shield.name}.
+                        """))
+                    return 'gargoyle'
+                else:
+                    print(dedent(f"""
+                        You can't afford the {copper_shield.name}.
+                        """))
+                    return 'gargoyle'
+            elif choice == "2" and copper_shield.inInventory == True and copper_shield.durability < 50:
+                if player.gold > copper_shield.value:
+                    player.gold -= copper_shield.value
+                    copper_shield.durability = 50
+                    print(dedent(f"""
+                        You repaired the {copper_shield.name}.
+                        """))
+                    return 'gargoyle'
+                else:
+                    print(dedent(f"""
+                        You can't afford to repair the {copper_shield.name}.
+                        """))
+                    return 'gargoyle'
+            elif choice == "3" and silver_shield.inInventory == False:
+                if player.gold > silver_shield.value:
+                    player.gold -= silver_shield.value
+                    silver_shield.inInventory = True
+                    print(dedent(f"""
+                        You bought the {silver_shield.name}.
+                        """))
+                    return 'gargoyle'
+                else:
+                    print(dedent(f"""
+                        You can't afford the {silver_shield.name}.
+                        """))
+                    return 'gargoyle'
+            elif choice == "4" and silver_shield.inInventory == True and silver_shield.durability < 100:
+                if player.gold > silver_shield.value:
+                    player.gold -= silver_shield.value
+                    silver_shield.durability = 100
+                    print(dedent(f"""
+                        You repaired the {silver_shield.name}.
+                        """))
+                    return 'gargoyle'
+                else:
+                    print(dedent(f"""
+                        You can't afford to repair the {silver_shield.name}.
+                        """))
+                    return 'gargoyle'
+            elif choice == "5":
+                return 'gargoyle'
+            else:
+                print(dedent("""
+                    You just stare at the gargoyle.
+                    """))
+                return 'gargoyle'
+        elif choice == "3":
+
+            if war_hammer.inInventory == False:
+                print(dedent(f"""
+                    1. buy {war_hammer.name} costs {war_hammer.value}
+                    """))
+
+            print(dedent("""
+                2. Go back
+                """))
+
+            choice = input("> ")
+
+            if choice == "1" and war_hammer.inInventory == False:
+                if player.gold > war_hammer.value:
+                    player.gold -= war_hammer.value
+                    war_hammer.inInventory = True
+                    print(dedent(f"""
+                        You bought the {war_hammer.name}.
+                        """))
+                    return 'gargoyle'
+                else:
+                    print(dedent(f"""
+                        You can't afford the {war_hammer.name}.
+                        """))
+                    return 'gargoyle'
+
+            elif choice == "2":
+                return 'gargoyle'
+            else:
+                print(dedent("""
+                    You just stare at the gargoyle.
+                    """))
+                return 'gargoyle'
+        elif choice == "4":
+            print(dedent("""
+                You stop talking to the gargoyle.
+                """))
+            return 'enterance_graveyard'
+        else:
+            print(dedent("""
+                You just stare at the gargoyle.
+                """))
+            return 'gargoyle'
+
+#Death System
 class Death(area):
 
     def enter(self):
@@ -221,6 +424,7 @@ class Death(area):
 
         exit(1)
 
+#Intro Area
 class Intro(area):
 
     def enter(self):
@@ -754,171 +958,6 @@ class EnteranceGraveyard(area):
                 return 'enterance_graveyard'
 
 enterance_graveyard = EnteranceGraveyard(False)
-
-class Gargoyle(area):
-    def enter(self):
-        print(dedent("""
-            -Gargoyle-
-            Hello Stranger. I have many useful items for sale.
-            What would you like to buy?
-            """))
-
-        print(dedent(f"""
-            Gold: {player.gold}
-            """))
-
-        print(dedent("""
-
-            Category?
-            1. Health
-            2. Shields
-            3. Go back
-            """))
-
-        choice = input("> ")
-
-        if choice == "1":
-            print(dedent(f"""
-                1. {life_bottle.name} costs {life_bottle.value}
-                2. {energy_vile.name} costs {energy_vile.value}
-                3. Go back
-                """))
-
-            choice = input("> ")
-
-            if choice == "1":
-                if player.gold > life_bottle.value:
-                    player.gold -= life_bottle.value
-                    life_bottle.amount += 1
-                    print(dedent(f"""
-                        You bought the {life_bottle.name}.
-                        """))
-                    return 'gargoyle'
-                else:
-                    print(dedent(f"""
-                        You can't afford the {life_bottle.name}.
-                        """))
-                    return 'gargoyle'
-            elif choice == "2":
-                if player.gold > energy_vile.value:
-                    player.gold -= energy_vile.value
-                    energy_vile.amount += 1
-                    print(dedent(f"""
-                        You bought the {energy_vile.name}.
-                        """))
-                    return 'gargoyle'
-                else:
-                    print(dedent(f"""
-                        You can't afford the {energy_vile.name}.
-                        """))
-                    return 'gargoyle'
-            elif choice == "3":
-                return 'gargoyle'
-            else:
-                print(dedent("""
-                    You just stare at the gargoyle.
-                    """))
-                return 'gargoyle'
-
-
-        elif choice == "2":
-
-            if copper_shield.inInventory == False:
-                print(dedent(f"""
-                    1. buy {copper_shield.name} costs {copper_shield.value}
-                    """))
-
-            if copper_shield.inInventory == True and copper_shield.durability < 50:
-                print(dedent(f"""
-                    2. repair {copper_shield.name} costs {copper_shield.value}
-                    """))
-
-            if silver_shield.inInventory == False:
-                print(dedent(f"""
-                    3. buy {silver_shield.name} costs {silver_shield.value}
-                    """))
-
-            if silver_shield.inInventory == True and silver_shield.durability < 100:
-                print(dedent(f"""
-                    4. repair {silver_shield.name} costs {silver_shield.value}
-                    """))
-
-            print(dedent("""
-                5. Go back
-                """))
-
-            choice = input("> ")
-
-            if choice == "1" and copper_shield.inInventory == False:
-                if player.gold > copper_shield.value:
-                    player.gold -= copper_shield.value
-                    copper_shield.inInventory = True
-                    print(dedent(f"""
-                        You bought the {copper_shield.name}.
-                        """))
-                    return 'gargoyle'
-                else:
-                    print(dedent(f"""
-                        You can't afford the {copper_shield.name}.
-                        """))
-                    return 'gargoyle'
-            elif choice == "2" and copper_shield.inInventory == True and copper_shield.durability < 50:
-                if player.gold > copper_shield.value:
-                    player.gold -= copper_shield.value
-                    copper_shield.durability = 50
-                    print(dedent(f"""
-                        You repaired the {copper_shield.name}.
-                        """))
-                    return 'gargoyle'
-                else:
-                    print(dedent(f"""
-                        You can't afford to repair the {copper_shield.name}.
-                        """))
-                    return 'gargoyle'
-            elif choice == "3" and silver_shield.inInventory == False:
-                if player.gold > silver_shield.value:
-                    player.gold -= silver_shield.value
-                    silver_shield.inInventory = True
-                    print(dedent(f"""
-                        You bought the {silver_shield.name}.
-                        """))
-                    return 'gargoyle'
-                else:
-                    print(dedent(f"""
-                        You can't afford the {silver_shield.name}.
-                        """))
-                    return 'gargoyle'
-            elif choice == "4" and silver_shield.inInventory == True and silver_shield.durability < 100:
-                if player.gold > silver_shield.value:
-                    player.gold -= silver_shield.value
-                    silver_shield.durability = 100
-                    print(dedent(f"""
-                        You repaired the {silver_shield.name}.
-                        """))
-                    return 'gargoyle'
-                else:
-                    print(dedent(f"""
-                        You can't afford to repair the {silver_shield.name}.
-                        """))
-                    return 'gargoyle'
-            elif choice == "5":
-                return 'gargoyle'
-            else:
-                print(dedent("""
-                    You just stare at the gargoyle.
-                    """))
-                return 'gargoyle'
-        elif choice == "3":
-            print(dedent("""
-                You stop talking to the gargoyle.
-                """))
-            return 'enterance_graveyard'
-        else:
-            print(dedent("""
-                You just stare at the gargoyle.
-                """))
-            return 'gargoyle'
-
 
 class GravesGraveyard(area):
     def __init__(self, looted):
@@ -1769,7 +1808,7 @@ class HallHilltopMausoleum(area):
             What do you do?
             """))
 
-        if (club.inInventory == True or hammer.inInventory == True) and hall_hilltop_mausoleum.destroyed == False:
+        if (club.inInventory == True or war_hammer.inInventory == True) and hall_hilltop_mausoleum.destroyed == False:
             print(dedent("""
                 1. Smash the crack in the ground.
                 """))
@@ -1795,7 +1834,7 @@ class HallHilltopMausoleum(area):
 
         choice = input("> ")
 
-        if choice == "1" and (club.inInventory == False or hammer.inInventory == False) and hall_hilltop_mausoleum.destroyed == False:
+        if choice == "1" and (club.inInventory == True or war_hammer.inInventory == True) and hall_hilltop_mausoleum.destroyed == False:
             print(dedent("""
                 You destroy the crack.
                 """))
@@ -2004,6 +2043,7 @@ class BossArenaHilltopMausoleum(area):
                 """))
             return 'boss_arena_hilltop_mausoleum'
 
+#Winning the game
 class Completed(area):
     def enter(self):
         print(dedent("""
@@ -2014,6 +2054,7 @@ class Completed(area):
             """))
         exit(1)
 
+#Map System
 class Map(object):
 
     areas = {

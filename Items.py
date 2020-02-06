@@ -1,3 +1,4 @@
+#Base Item
 class Item(object):
     def __init__(self, name, inInventory):
         self.name = name
@@ -41,15 +42,16 @@ silver_shield = Shield("Silver Shield", False, 100, 50)
 
 #Weapons
 class Weapon(Item):
-    def __init__(self, name, damage, inInventory):
+    def __init__(self, name, damage, inInventory, value):
         self.name = name
         self.damage = damage
         self.inInventory = inInventory
+        self.value = value
 
-arm = Weapon("Arm", 5, True)
+arm = Weapon("Arm", 5, True, 0)
 
-small_sword = Weapon("Small Sword", 10, False)
+small_sword = Weapon("Small Sword", 10, False, 50)
 
-club = Weapon("Club", 15, False)
+club = Weapon("Club", 15, False, 100)
 
-hammer = Weapon("Hammer", 20, False)
+war_hammer = Weapon("War Hammer", 20, False, 200)
