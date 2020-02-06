@@ -7,8 +7,7 @@ class Character(object):
 #Player
 class Player(Character):
         def __init__(self, name, health, gold):
-            self.name = name
-            self.health = health
+            Character.__init__(self, name, health)
             self.gold = gold
 
 player = Player("Player", 100, 0)
@@ -16,8 +15,7 @@ player = Player("Player", 100, 0)
 #Enemies
 class Enemy(Character):
         def __init__(self, name, health, damage):
-            self.name = name
-            self.health = health
+            Character.__init__(self, name, health)
             self.damage = damage
 
 zombie = Enemy("Zombie", 20, 10)
@@ -31,9 +29,7 @@ wolf = Enemy("Wolf", 25, 25)
 #Bosses
 class Boss(Enemy):
         def __init__(self, name, health, damage, defeated):
-            self.name = name
-            self.health = health
-            self.damage = damage
+            Enemy.__init__(self, name, health, damage)
             self.defeated = defeated
 
 stained_glass_demon = Boss("Stained Glass Demon", 200, 30, True)

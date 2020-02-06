@@ -157,9 +157,9 @@ class Combat(area):
                     """))
                 return 'combat'
 
-            enemyAttack = randint(1,2)
+            enemy_attack = randint(1,2)
 
-            if enemyAttack > 1 and combat.enemy.health > 0:
+            if enemy_attack > 1 and combat.enemy.health > 0:
                 print(dedent(f"""
                     The {combat.enemy.name} hits.
                     """))
@@ -964,8 +964,8 @@ class GravesGraveyard(area):
         self.looted = looted
 
     def enter(self):
-        combatChance = randint(1,2)
-        if combatChance > 1 and combat.fought == False:
+        combat_chance = randint(1,2)
+        if combat_chance > 1 and combat.fought == False:
             combat.enemy = zombie
             combat.area = 'graves_graveyard'
             zombie.health = 20
@@ -1050,8 +1050,8 @@ graves_graveyard = GravesGraveyard(False)
 
 class WoodenGateGraveyard(area):
     def enter(self):
-        combatChance = randint(1,2)
-        if combatChance > 1 and combat.fought == False:
+        combat_chance = randint(1,2)
+        if combat_chance > 1 and combat.fought == False:
             combat.enemy = zombie
             combat.area = 'wooden_gate_graveyard'
             zombie.health = 20
@@ -1123,8 +1123,8 @@ class WoodenGateGraveyard(area):
 
 class TombGraveyard(area):
     def enter(self):
-        combatChance = randint(1,2)
-        if combatChance > 1 and combat.fought == False:
+        combat_chance = randint(1,2)
+        if combat_chance > 1 and combat.fought == False:
             combat.enemy = zombie
             combat.area = 'tomb_graveyard'
             zombie.health = 20
@@ -1174,6 +1174,7 @@ class TombGraveyard(area):
                 stealing the key.
                 """))
             player.gold -= 50
+            player.health += 5
             combat.fought = True
             return 'tomb_graveyard'
         elif choice == "1" and player.gold < 50 and graveyard_key.inInventory == True:
@@ -1200,8 +1201,8 @@ class AngelStatueGraveyard(area):
         self.looted = looted
 
     def enter(self):
-        combatChance = randint(1,2)
-        if combatChance > 1 and combat.fought == False:
+        combat_chance = randint(1,2)
+        if combat_chance > 1 and combat.fought == False:
             combat.enemy = zombie
             combat.area = 'angel_statue_graveyard'
             zombie.health = 20
@@ -1308,8 +1309,8 @@ angel_statue_graveyard = AngelStatueGraveyard(1, False)
 
 class MonumentGraveyard(area):
     def enter(self):
-        combatChance = randint(1,2)
-        if combatChance > 1 and combat.fought == False:
+        combat_chance = randint(1,2)
+        if combat_chance > 1 and combat.fought == False:
             combat.enemy = zombie
             combat.area = 'monument_graveyard'
             zombie.health = 20
@@ -1359,8 +1360,8 @@ class MonumentGraveyard(area):
 
 class SkullGateGraveyard(area):
     def enter(self):
-        combatChance = randint(1,2)
-        if combatChance > 1 and combat.fought == False:
+        combat_chance = randint(1,2)
+        if combat_chance > 1 and combat.fought == False:
             combat.enemy = wolf
             combat.area = 'skull_gate_graveyard'
             wolf.health = 25
@@ -1430,8 +1431,8 @@ class CliffSideGraveyard(area):
         self.looted = looted
 
     def enter(self):
-        combatChance = randint(1,2)
-        if combatChance > 1 and combat.fought == False:
+        combat_chance = randint(1,2)
+        if combat_chance > 1 and combat.fought == False:
             combat.enemy = zombie
             combat.area = 'cliffside_graveyard'
             zombie.health = 20
@@ -1495,8 +1496,8 @@ cliffside_graveyard = CliffSideGraveyard(False)
 
 class DitchGraveyard(area):
     def enter(self):
-        combatChance = randint(1,2)
-        if combatChance > 1 and combat.fought == False:
+        combat_chance = randint(1,2)
+        if combat_chance > 1 and combat.fought == False:
             combat.enemy = headless_zombie
             combat.area = 'ditch_graveyard'
             headless_zombie.health = 30
@@ -1543,8 +1544,8 @@ class DitchGraveyard(area):
 
 class BaseCemetaryHill(area):
     def enter(self):
-        combatChance = randint(1,2)
-        if combatChance > 1 and combat.fought == False:
+        combat_chance = randint(1,2)
+        if combat_chance > 1 and combat.fought == False:
             combat.enemy = headless_zombie
             combat.area = 'base_cemetaryhill'
             headless_zombie.health = 30
@@ -1668,8 +1669,8 @@ class TopCemetaryHill(area):
 
 class ForestCemetaryHill(area):
     def enter(self):
-        combatChance = randint(1,2)
-        if combatChance > 1 and combat.fought == False:
+        combat_chance = randint(1,2)
+        if combat_chance > 1 and combat.fought == False:
             combat.enemy = wolf
             combat.area = 'forest_cemetaryhill'
             wolf.health = 25
@@ -1713,8 +1714,8 @@ class ForestCemetaryHill(area):
 
 class WitchesCaveCemetaryHill(area):
     def enter(self):
-        combatChance = randint(1,2)
-        if combatChance > 1 and combat.fought == False:
+        combat_chance = randint(1,2)
+        if combat_chance > 1 and combat.fought == False:
             combat.enemy = imp
             combat.area = 'witches_cave_cemetaryhill'
             imp.health = 20
@@ -1775,8 +1776,8 @@ class HallHilltopMausoleum(area):
         self.destroyed = destroyed
 
     def enter(self):
-        combatChance = randint(1,2)
-        if combatChance > 1 and combat.fought == False:
+        combat_chance = randint(1,2)
+        if combat_chance > 1 and combat.fought == False:
             combat.enemy = imp
             combat.area = 'hall_hilltop_mausoleum'
             imp.health = 20
@@ -1873,8 +1874,8 @@ hall_hilltop_mausoleum = HallHilltopMausoleum(False)
 
 class CatacombsHilltopMausoleum(area):
     def enter(self):
-        combatChance = randint(1,2)
-        if combatChance > 1 and combat.fought == False:
+        combat_chance = randint(1,2)
+        if combat_chance > 1 and combat.fought == False:
             combat.enemy = imp
             combat.area = 'catacombs_hilltop_mausoleum'
             imp.health = 20
@@ -1920,8 +1921,8 @@ class ChamberHilltopMausoleum(area):
         self.destroyed = destroyed
 
     def enter(self):
-        combatChance = randint(1,2)
-        if combatChance > 1 and combat.fought == False:
+        combat_chance = randint(1,2)
+        if combat_chance > 1 and combat.fought == False:
             combat.enemy = imp
             combat.area = 'chamber_hilltop_mausoleum'
             imp.health = 20
