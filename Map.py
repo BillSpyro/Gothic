@@ -166,11 +166,15 @@ class Combat(area):
                     print(dedent(f"""
                         Your {silver_shield.name} took {combat.enemy.damage} damage.
                         """))
+                    if silver_shield.durability < 0:
+                        silver_shield.durability = 0
                 elif copper_shield.inInventory == True and copper_shield.durability > 0:
                     copper_shield.durability -= combat.enemy.damage
                     print(dedent(f"""
                         Your {copper_shield.name} took {combat.enemy.damage} damage.
                         """))
+                    if copper_shield.durability < 0:
+                        copper_shield.durability = 0
                 else:
                     player.health -= combat.enemy.damage
                     print(dedent(f"""
@@ -1334,7 +1338,7 @@ class SkullGateGraveyard(area):
 
         if skull_key.inInventory == True:
             print(dedent("""
-                You now have the skull key and you can move forward.
+                You now have the skull key and leave the Necropolis.
                 """))
 
         print(dedent("""
@@ -1383,48 +1387,632 @@ class SkullGateGraveyard(area):
             return 'skull_gate_graveyard'
 
 class CliffSideGraveyard(area):
+    def __init__(self, looted):
+        self.looted = looted
+
     def enter(self):
-        pass
+        combatChance = randint(1,2)
+        if combatChance > 1 and combat.fought == False:
+            combat.enemy = zombie
+            combat.area = 'cliffside_graveyard'
+            zombie.health = 20
+            return 'combat'
+
+        combat.fought = False
+
+        print(dedent("""
+            -CliffSide Graveyard-
+            You are now on a cliff hanging above a ditch. Passed the ditch is
+            the Hilltop Mausoleum. There are many graves and tombstones along
+            the cliff edge. The ditch looks low enough for you to jump down
+            into it.
+            """))
+
+        print(dedent("""
+
+            What do you do?
+            1. Go down in the ditch.
+            """))
+
+        if cliffside_graveyard.looted == False:
+            print(dedent("""
+            2. Loot an open grave.
+                """))
+
+        print(dedent("""
+            3. Go to the angel statue.
+            """))
+
+        choice = input("> ")
+
+        if choice == "1":
+            print(dedent("""
+                You go down in the ditch.
+                """))
+            return 'ditch_graveyard'
+        elif choice == "2" and cliffside_graveyard.looted == False:
+            gold_yield = randint(20, 100)
+            print(dedent(f"""
+                You pillage a nearby open grave.
+                The plunder has yielded you a {life_bottle.name}.
+                """))
+            life_bottle.amount += 1
+            cliffside_graveyard.looted = True
+            combat.fought = True
+            return 'cliffside_graveyard'
+        elif choice == "3":
+            print(dedent("""
+                You go to the angel statue.
+                """))
+            return 'angel_statue_graveyard'
+        else:
+            print(dedent("""
+                You just stare off into the ditch.
+                """))
+            combat.fought = True
+            return 'cliffside_graveyard'
+
+cliffside_graveyard = CliffSideGraveyard(False)
 
 class DitchGraveyard(area):
     def enter(self):
-        pass
+        combatChance = randint(1,2)
+        if combatChance > 1 and combat.fought == False:
+            combat.enemy = headless_zombie
+            combat.area = 'ditch_graveyard'
+            headless_zombie.health = 30
+            return 'combat'
 
-class EnteranceCemetaryHill(area):
-    def enter(self):
-        pass
+        combat.fought = False
+
+        print(dedent("""
+            -Ditch Graveyard-
+            You are now in a ditch in the graveyard. There are many coffins
+            lying around that haven't been placed in a proper burial. From
+            one end of the ditch there is a door and passed it is the base
+            of Cemetary Hill which is the foundation for the Hilltop
+            Mausoleum. From the other is stairs that lead up to the monument
+            which is the center of the graveyard. Up above you can see a
+            cliffside that houses many tombstones.
+            """))
+
+        print(dedent("""
+
+            What do you do?
+            1. Go through the door to the base of Cemetary Hill.
+            2. Go up the stairs to the monument.
+            """))
+
+        choice = input("> ")
+
+        if choice == "1":
+            print(dedent("""
+                You go down in the ditch.
+                """))
+            return 'base_cemetaryhill'
+        elif choice == "2":
+            print(dedent("""
+                You go up to the monument.
+                """))
+            return 'monument_graveyard'
+        else:
+            print(dedent("""
+                You just stare at the unfilled graves.
+                """))
+            combat.fought = True
+            return 'ditch_graveyard'
 
 class BaseCemetaryHill(area):
     def enter(self):
-        pass
+        combatChance = randint(1,2)
+        if combatChance > 1 and combat.fought == False:
+            combat.enemy = headless_zombie
+            combat.area = 'base_cemetaryhill'
+            headless_zombie.health = 30
+            return 'combat'
 
+        combat.fought = False
+
+        print(dedent("""
+            -Base Cemetaryhill-
+            You have arrived at the base of Cemetaryhill. You could attempt
+            to climb the hill but at the top there are a pair of gargoyles
+            spewing boulders that are rolling down the hill. It would be
+            painful to get hit by one unless if you had a shield handy.
+            Off to the side is a small forest that is enclosed in the graveyard.
+            There is also a door that leads to the ditch in the graveyard.
+            """))
+
+        print(dedent("""
+
+            What do you do?
+            1. Attempt to climb the hill.
+            2. Go off to the forest.
+            3. Go through the door.
+            """))
+
+        choice = input("> ")
+
+        if choice == "1":
+            print(dedent("""
+                You attempt to climb the hill. While doing so
+                several boulders are rolling down.
+                """))
+            boulders = randint(1,3)
+            chance = randint(1,3)
+            damage = boulders * 30
+            if chance == 1:
+                print(dedent("""
+                    You have evaded the boulders and took no damage.
+                    """))
+                return 'top_cemetaryhill'
+            else:
+                print(dedent(f"""
+                    You have been hit by {boulders} boulders.
+                    """))
+                if silver_shield.inInventory == True and silver_shield.durability > 0:
+                    silver_shield.durability -= damage
+                    print(dedent(f"""
+                        Your {silver_shield.name} took {damage} damage.
+                        """))
+                    if silver_shield.durability < 0:
+                        silver_shield.durability = 0
+                elif copper_shield.inInventory == True and copper_shield.durability > 0:
+                    copper_shield.durability -= damage
+                    print(dedent(f"""
+                        Your {copper_shield.name} took {damage} damage.
+                        """))
+                    if copper_shield.durability < 0:
+                        copper_shield.durability = 0
+                else:
+                    player.health -= damage
+                    print(dedent(f"""
+                        You took {damage} damage.
+                        """))
+                    if player.health <= 0:
+                        print(dedent(f"""
+                            You have been crushed by a boulder.
+                            """))
+                        return 'death'
+                return 'top_cemetaryhill'
+        elif choice == "2":
+            print(dedent("""
+                You go to the forest area.
+                """))
+            return 'forest_cemetaryhill'
+        elif choice == "3":
+            print(dedent("""
+                You go through the door.
+                """))
+            return 'ditch_graveyard'
+        else:
+            print(dedent("""
+                You just stare rolling boulders.
+                """))
+            combat.fought = True
+            return 'base_cemetaryhill'
+
+#WIP
 class TopCemetaryHill(area):
     def enter(self):
-        pass
+        print(dedent("""
+            -Top Cemetaryhill-
+            You are now at the top of Cemetary Hill. The Hilltop Mausoleum lies
+            in front of you. There are two gargoyles spewing boulders down the
+            hill. You could go down the hill to enter the graveyard proper again.
+            """))
+
+        print(dedent("""
+
+            What do you do?
+            1. Enter the Hilltop Mausoleum.
+            2. Go down Cemetary Hill.
+            """))
+
+        choice = input("> ")
+
+        if choice == "1":
+            print(dedent("""
+                You enter the Hilltop Mausoleum.
+                """))
+            return 'hall_hilltop_mausoleum'
+        elif choice == "2":
+            print(dedent("""
+                You go down to the base of Cemetaryhill.
+                """))
+            return 'base_cemetaryhill'
+        else:
+            print(dedent("""
+                You just stare at the Hilltop Mausoleum.
+                """))
+            return 'top_cemetaryhill'
 
 class ForestCemetaryHill(area):
     def enter(self):
-        pass
+        combatChance = randint(1,2)
+        if combatChance > 1 and combat.fought == False:
+            combat.enemy = wolf
+            combat.area = 'forest_cemetaryhill'
+            wolf.health = 25
+            return 'combat'
+
+        combat.fought = False
+
+        print(dedent("""
+            -Forest Cemetaryhill-
+            You are now in the forested area of the graveyard. There are many
+            trees surrounding the area and not graves in sight. From where you
+            are you can see a cave that is behind Cemetaryhill. There is also
+            a path that leads back to the base of Cemetaryhill.
+            """))
+
+        print(dedent("""
+
+            What do you do?
+            1. Go into the cave.
+            2. Go to the base of Cemetaryhill
+            """))
+
+        choice = input("> ")
+
+        if choice == "1":
+            print(dedent("""
+                You go into the cave.
+                """))
+            return 'witches_cave_cemetaryhill'
+        elif choice == "2":
+            print(dedent("""
+                You go to the base of Cemetaryhill.
+                """))
+            return 'base_cemetaryhill'
+        else:
+            print(dedent("""
+                You just stare into the forest.
+                """))
+            combat.fought = True
+            return 'forest_cemetaryhill'
 
 class WitchesCaveCemetaryHill(area):
     def enter(self):
-        pass
+        combatChance = randint(1,2)
+        if combatChance > 1 and combat.fought == False:
+            combat.enemy = imp
+            combat.area = 'witches_cave_cemetaryhill'
+            imp.health = 20
+            return 'combat'
+
+        combat.fought = False
+
+        print(dedent("""
+            -Witches Cave Cemetaryhill-
+            You are now inside the cave. It appears to be an old witches coven
+            that was abandoned. You can see weird ritualistic markings along
+            the cave wall, there are a couple of bookshelves and cauldrons
+            laid about the place.
+            """))
+
+        if club.inInventory == False:
+            print(dedent("""
+                There is a large club lying next to a bookshelf.
+                """))
+
+        print(dedent("""
+
+            What do you do?
+            """))
+
+        if club.inInventory == False:
+            print(dedent("""
+                1. Take the club.
+                """))
+
+        print(dedent("""
+            2. Go to the forest.
+            """))
+
+        choice = input("> ")
+
+        if choice == "1" and club.inInventory == False:
+            print(dedent("""
+                You go take the club.
+                """))
+            club.inInventory = True
+            combat.fought = True
+            return 'witches_cave_cemetaryhill'
+        elif choice == "2":
+            print(dedent("""
+                You go to the forest.
+                """))
+            return 'forest_cemetaryhill'
+        else:
+            print(dedent("""
+                You just stare at the markings on the wall.
+                """))
+            combat.fought = True
+            return 'witches_cave_cemetaryhill'
 
 class HallHilltopMausoleum(area):
+    def __init__(self, destroyed):
+        self.destroyed = destroyed
+
     def enter(self):
-        pass
+        combatChance = randint(1,2)
+        if combatChance > 1 and combat.fought == False:
+            combat.enemy = imp
+            combat.area = 'hall_hilltop_mausoleum'
+            imp.health = 20
+            return 'combat'
+
+        combat.fought = False
+
+        print(dedent("""
+            -Hall Hilltop Mausoleum-
+            You have entered the main hall of the Hilltop Mausoleum. The walls are
+            lined with stained glass and torches illuminating the dank Mausoleum.
+            There are coffins laid in two columns along the walls. There also is
+            a crack in the ground. There is a gate in front of you and beyond it
+            is a large circular arena. Also you could leave the Mausoleum.
+            """))
+
+        if club.inInventory == True and hall_hilltop_mausoleum.destroyed == False:
+            print(dedent("""
+                You could destroy the crack in the ground.
+                """))
+
+        elif hall_hilltop_mausoleum.destroyed == True:
+            print(dedent("""
+                There is an opening in the ground.
+                """))
+
+        print(dedent("""
+
+            What do you do?
+            """))
+
+        if (club.inInventory == True or hammer.inInventory == True) and hall_hilltop_mausoleum.destroyed == False:
+            print(dedent("""
+                1. Smash the crack in the ground.
+                """))
+
+        elif hall_hilltop_mausoleum.destroyed == True:
+            print(dedent("""
+                1. Go through the opening in the ground.
+                """))
+
+        if skull_key.inInventory == True:
+            print(dedent("""
+                2. Go through the gate.
+                """))
+
+        else:
+            print(dedent("""
+                2. Attack the gate.
+                """))
+
+        print(dedent("""
+            3. Leave the Mausoleum.
+            """))
+
+        choice = input("> ")
+
+        if choice == "1" and (club.inInventory == False or hammer.inInventory == False) and hall_hilltop_mausoleum.destroyed == False:
+            print(dedent("""
+                You destroy the crack.
+                """))
+            hall_hilltop_mausoleum.destroyed = True
+            combat.fought = True
+            return 'hall_hilltop_mausoleum'
+        elif choice == "1" and hall_hilltop_mausoleum.destroyed == True:
+            print(dedent("""
+                You jump down into the opening.
+                """))
+            return 'catacombs_hilltop_mausoleum'
+        elif choice == "2" and skull_key.inInventory == True:
+            print(dedent("""
+                You go through the gate.
+                """))
+            return 'boss_arena_hilltop_mausoleum'
+        elif choice == "2" and skull_key.inInventory == False:
+            print(dedent("""
+                You try to attack the gate to no avail.
+                """))
+            combat.fought = True
+            return 'hall_hilltop_mausoleum'
+        elif choice == "3":
+            print(dedent("""
+                You leave the Mausoleum
+                """))
+            return 'top_cemetaryhill'
+        else:
+            print(dedent("""
+                You just stare at the stained glass.
+                """))
+            combat.fought = True
+            return 'hall_hilltop_mausoleum'
+
+hall_hilltop_mausoleum = HallHilltopMausoleum(False)
 
 class CatacombsHilltopMausoleum(area):
     def enter(self):
-        pass
+        combatChance = randint(1,2)
+        if combatChance > 1 and combat.fought == False:
+            combat.enemy = imp
+            combat.area = 'catacombs_hilltop_mausoleum'
+            imp.health = 20
+            return 'combat'
 
-class GlassHeartHilltopMausoleum(area):
-    def enter(self):
-        pass
+        combat.fought = False
 
-class StainedGlassHilltopMausoleum(area):
+        print(dedent("""
+            -Catacombs Hilltop Mausoleum-
+            You find yourself deeper inside of the Mausoleum. You seem to be
+            in catacombs of the Mausoleum. There are stairs that lead upward
+            and a chamber that is emitting a red light.
+            """))
+
+        print(dedent("""
+
+            What do you do?
+            1. Go up the stairs.
+            2. Go to the chamber.
+            """))
+
+        choice = input("> ")
+
+        if choice == "1":
+            print(dedent("""
+                You go up the stairs.
+                """))
+            return 'boss_arena_hilltop_mausoleum'
+        elif choice == "2":
+            print(dedent("""
+                You go into the chamber.
+                """))
+            return 'chamber_hilltop_mausoleum'
+        else:
+            print(dedent("""
+                You just stare at the coffins.
+                """))
+            combat.fought = True
+            return 'catacombs_hilltop_mausoleum'
+
+class ChamberHilltopMausoleum(area):
+    def __init__(self, destroyed):
+        self.destroyed = destroyed
+
     def enter(self):
-        pass
+        combatChance = randint(1,2)
+        if combatChance > 1 and combat.fought == False:
+            combat.enemy = imp
+            combat.area = 'chamber_hilltop_mausoleum'
+            imp.health = 20
+            return 'combat'
+
+        combat.fought = False
+
+        print(dedent("""
+            -Chamber Hilltop Mausoleum-
+            You are now in a chamber withing the Mausoleum.
+            """))
+
+        if chamber_hilltop_mausoleum.destroyed == False:
+            print(dedent("""
+                There is a glass heart in the middle of the room.
+                """))
+
+        elif chamber_hilltop_mausoleum.destroyed == True:
+            print(dedent("""
+                There are pieces of glass on the ground.
+                """))
+
+        print(dedent("""
+
+            What do you do?
+            """))
+
+        if chamber_hilltop_mausoleum.destroyed == False:
+            print(dedent("""
+                1. Smash the glass heart.
+                """))
+
+        print(dedent("""
+            2. Leave the chamber.
+            """))
+
+        choice = input("> ")
+
+        if choice == "1" and chamber_hilltop_mausoleum.destroyed == False:
+            print(dedent("""
+                You smash the glass heart into pieces.
+                """))
+            chamber_hilltop_mausoleum.destroyed = True
+            combat.fought = True
+            stained_glass_demon.defeated = False
+            return 'chamber_hilltop_mausoleum'
+        elif choice == "2":
+            print(dedent("""
+                You go back into the catacombs.
+                """))
+            return 'catacombs_hilltop_mausoleum'
+        else:
+            print(dedent("""
+                You just stare into space.
+                """))
+            combat.fought = True
+            return 'chamber_hilltop_mausoleum'
+
+chamber_hilltop_mausoleum = ChamberHilltopMausoleum(False)
+
+class BossArenaHilltopMausoleum(area):
+    def enter(self):
+
+        print(dedent("""
+            -Boss Arena Mausoleum-
+            You are now in a large circular room. There is a huge stained glass
+            window on the wall. There are stairs that lead down to the catacombs
+            and there is a gate that leads to the hall. The gate is locked and
+            needs the Skull Key to unlock which is the same key for the Skull
+            Gate back at the Graveyard.
+            """))
+
+        if stained_glass_demon.defeated == False:
+            print(dedent("""
+                With the glass heart destroyed you have released the demon
+                within. The demon then flys into the stained glass window.
+                A moment later the glass comes to life as it bursts out of
+                the window. Now a lumbering Stained Glass Demon towers over
+                you.
+                """))
+            combat.enemy = stained_glass_demon
+            combat.area = 'boss_arena_hilltop_mausoleum'
+            stained_glass_demon.defeated = True
+            skull_key.inInventory = True
+            return 'combat'
+        else:
+            print(dedent(f"""
+                With the death of the {stained_glass_demon.name} you now have the
+                {skull_key.name}. You can now make your way to the skull gates
+                and leave the Necropolis.
+                """))
+
+        print(dedent("""
+
+            What do you do?
+            1. Go down the stairs.
+            """))
+
+        if skull_key.inInventory == True:
+            print(dedent("""
+            2. Go to the hall.
+                """))
+
+        choice = input("> ")
+
+        if choice == "1":
+            print(dedent("""
+                You go down the stairs.
+                """))
+            return 'catacombs_hilltop_mausoleum'
+        elif choice == "2" and skull_key.inInventory == True:
+            print(dedent("""
+                You go into hall.
+                """))
+            return 'hall_hilltop_mausoleum'
+        else:
+            print(dedent("""
+                You just stare at the stained glass window.
+                """))
+            return 'boss_arena_hilltop_mausoleum'
+
+class Completed(area):
+    def enter(self):
+        print(dedent("""
+            -Land of the Living-
+            You have escaped the Necropolis and now that you are free
+            from the imprisonment of the Graveyard you can now
+            wreak havoc across the Land of the Living.
+            """))
+        exit(1)
 
 class Map(object):
 
@@ -1444,7 +2032,18 @@ class Map(object):
         'tomb_graveyard': TombGraveyard(),
         'angel_statue_graveyard': AngelStatueGraveyard(0, 0),
         'monument_graveyard': MonumentGraveyard(),
-        'skull_gate_graveyard': SkullGateGraveyard()
+        'skull_gate_graveyard': SkullGateGraveyard(),
+        'cliffside_graveyard': CliffSideGraveyard(0),
+        'ditch_graveyard': DitchGraveyard(),
+        'base_cemetaryhill': BaseCemetaryHill(),
+        'forest_cemetaryhill': ForestCemetaryHill(),
+        'witches_cave_cemetaryhill': WitchesCaveCemetaryHill(),
+        'top_cemetaryhill': TopCemetaryHill(),
+        'hall_hilltop_mausoleum': HallHilltopMausoleum(0),
+        'catacombs_hilltop_mausoleum': CatacombsHilltopMausoleum(),
+        'chamber_hilltop_mausoleum': ChamberHilltopMausoleum(0),
+        'boss_arena_hilltop_mausoleum': BossArenaHilltopMausoleum(),
+        'completed': Completed()
     }
 
     def __init__(self, start_area):

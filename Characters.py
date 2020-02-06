@@ -35,4 +35,4 @@ class Boss(Enemy):
             self.damage = damage
             self.defeated = defeated
 
-stained_glass_demon = Boss("Stained Glass Demon", 200, 30, False)
+stained_glass_demon = Boss("Stained Glass Demon", 200, 30, True)
